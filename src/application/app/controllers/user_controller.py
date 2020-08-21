@@ -1,19 +1,16 @@
-from starlette.endpoints import HTTPEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-class UserEntireController(HTTPEndpoint):
-    async def get(self, request:Request):
+class UserController:
+    @staticmethod
+    async def index(request:Request):
         return JSONResponse({'method': 'get'})
 
-    async def post(self, request:Request):
+    @staticmethod
+    async def create(request:Request):
         return JSONResponse({'method': 'post'})
 
-class UserDetailController(HTTPEndpoint):
-    async def get(self, request:Request):
+    @staticmethod
+    async def show(request:Request):
         id = request.path_params['id']
-        return JSONResponse({'method': f'get {id}'})
-
-    async def post(self, request:Request):
-        id = request.path_params['id']
-        return JSONResponse({'method': f'post {id}'})
+        return JSONResponse({'id': id})
