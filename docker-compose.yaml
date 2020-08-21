@@ -1,0 +1,42 @@
+# 開発環境用
+
+version: '3'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    tty: true
+    depends_on:
+      - app
+    ports: # host:guest
+      - "80:80"
+    volumes:
+      - ./docker/nginx/log:/var/log/nginx # ログ
+      - ./docker/sock:/var/run/sock # ソケット ローカル←→nginx
+      - ./docker/nginx/conf.d.dev:/etc/nginx/conf.d # nginxの設定ファイル
+
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    tty: true
+    environment:
+      - DB_PATH=/home/db.sqlite3
+      - DJAGO_ENV=dev
+    volumes:
+      - .:/root/project
+      - ./docker/python/log/app:/var/log/app
+      - ./docker/python/log/admin:/var/log/admin
+      - ./docker/sock:/var/run/sock
+
+  db:
+    image: postgres:alpine
+    tty: true
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: Password!
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data
+      - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
