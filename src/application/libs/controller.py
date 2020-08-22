@@ -1,7 +1,7 @@
 from starlette.templating import Jinja2Templates
+from typing import Dict
 
-class Controller:
-    templates = Jinja2Templates(directory='resources')
+templates = Jinja2Templates(directory='resources')
 
-    def render(self, path, params):
-        return self.templates.TemplateResponse(path, params)
+def render(path:str, params:Dict):
+    return templates.TemplateResponse(path, params)
